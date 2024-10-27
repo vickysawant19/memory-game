@@ -1,4 +1,3 @@
-Here's a simplified and polished **README.md** for your Memory Game project:
 
 ---
 
