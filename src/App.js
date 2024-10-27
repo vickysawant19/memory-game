@@ -40,7 +40,7 @@ export default function App() {
     const remaining = grid.filter((item) => !item.isCorrect);
     console.log(remaining.length);
     if (remaining.length === 2) {
-      alert(`Game Completed! you have used ${clickCount}`);
+      alert(`Game Completed! you have used ${clickCount} clicks`);
       setClickCount(0);
     }
   };
