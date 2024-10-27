@@ -1,6 +1,3 @@
-Here's a **README.md** for your "Memory Game" GitHub project, designed to be both informative and inviting for potential contributors or users:
-
----
 
 # 🧠 Memory Game
 
