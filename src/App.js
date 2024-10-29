@@ -15,10 +15,14 @@ export default function App() {
     const values = new Array(8)
       .fill(1)
       .map((item) => Math.floor(Math.random() * 100) + 1);
+
+    const doubleValues = [...values, ...values];
+
+    console.log(doubleValues);
     const arr = new Array(16).fill(1).map((item, id) => {
       return {
         id: id,
-        value: values[id % 8],
+        value: doubleValues[id],
         isHidden: true,
         isCorrect: false,
       };
@@ -46,7 +50,8 @@ export default function App() {
   };
 
   const handleClick = (item) => {
-    if (guess.previous === item.id || item.isCorrect) return;
+    if (item.isCorrect || guess.previous === item.id) return;
+
     setClickCount((prev) => prev + 1);
     if (guess.previous < 0) {
       setGuess((prev) => ({ previous: item.id }));
@@ -90,13 +95,19 @@ export default function App() {
             .map((item) => (
               <div
                 style={{
-                  backgroundColor: `${item.isCorrect ? "green" : "blue"}`,
+                  backgroundColor: `${
+                    item.isCorrect ? "green" : item.isHidden ? "gray" : "blue"
+                  }`,
+                  transformStyle: "preserve-3d",
+                  transform: `${
+                    item.isHidden ? "rotateY(180deg)" : "rotateY(0deg)"
+                  }`,
                 }}
                 key={item.id}
                 onClick={() => (item.isCorrect ? "" : handleClick(item))}
                 className="box"
               >
-                {item.isHidden ? "" : item.value}
+                <div className="back">{item.value}</div>
               </div>
             ))}
       </div>
