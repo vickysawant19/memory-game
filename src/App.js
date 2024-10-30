@@ -7,18 +7,18 @@ export default function App() {
   const [clickCount, setClickCount] = useState(0);
   const [guess, setGuess] = useState({
     previous: -1,
+    current: -1,
   });
 
   const createGame = () => {
     setClickCount(0);
-    setGuess({ previous: -1 });
-    const values = new Array(8)
+    setGuess({ current: -1, previous: -1 });
+    const values = new Array(20)
       .fill(1)
-      .map((item) => Math.floor(Math.random() * 100) + 1);
+      .map((_) => Math.floor(Math.random() * 100) + 1)
+      .slice(0, 8);
 
     const doubleValues = [...values, ...values];
-
-    console.log(doubleValues);
     const arr = new Array(16).fill(1).map((item, id) => {
       return {
         id: id,
@@ -42,41 +42,60 @@ export default function App() {
 
   const calculateWin = () => {
     const remaining = grid.filter((item) => !item.isCorrect);
-    console.log(remaining.length);
-    if (remaining.length === 2) {
+    if (remaining.length === 0) {
       alert(`Game Completed! you have used ${clickCount} clicks`);
+      setGameStart(false);
       setClickCount(0);
     }
   };
 
-  const handleClick = (item) => {
-    if (item.isCorrect || guess.previous === item.id) return;
+  useEffect(() => {
+    if (!gameStart) return;
+    calculateWin();
+  }, [grid]);
 
+  const handleClick = (item) => {
+    //check if box already open or is correct then return
+    if (item.isCorrect || guess.previous === item.id) return;
+    //increment count for click
     setClickCount((prev) => prev + 1);
-    if (guess.previous < 0) {
-      setGuess((prev) => ({ previous: item.id }));
+    //open the box
+    setGrid((prev) => [
+      ...prev.filter((el) => el.id !== item.id),
+      { ...item, isHidden: false },
+    ]);
+    if (guess.current < 0) {
+      setGuess((prev) => ({ ...prev, current: item.id }));
+    } else {
+      setGuess(() => ({ previous: guess.current, current: item.id }));
+    }
+  };
+
+  useEffect(() => {
+    if (guess.current < 0 || guess.previous < 0) return;
+    const timeout = setTimeout(() => {
+      checkCorrect();
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [guess]);
+
+  const checkCorrect = () => {
+    const previous = grid.find((itm) => itm.id === guess.previous);
+    const current = grid.find((itm) => itm.id === guess.current);
+    if (!previous || !current) return;
+    setGuess({ current: -1, previous: -1 });
+    if (previous.value === current.value) {
       setGrid((prev) => [
-        ...prev.filter((el) => el.id !== item.id),
-        { ...item, isHidden: false },
+        ...prev.filter((el) => el.id !== current.id && el.id !== previous.id),
+        { ...current, isHidden: false, isCorrect: true },
+        { ...previous, isHidden: false, isCorrect: true },
       ]);
     } else {
-      const previous = grid.find((item) => item.id === guess.previous);
-      if (previous.value === item.value) {
-        setGrid((prev) => [
-          ...prev.filter((el) => el.id !== item.id && el.id !== previous.id),
-          { ...item, isHidden: false, isCorrect: true },
-          { ...previous, isHidden: false, isCorrect: true },
-        ]);
-        setGuess({ previous: -1 });
-        calculateWin();
-      } else {
-        setGuess({ previous: -1 });
-        setGrid((prev) => [
-          ...prev.filter((el) => el.id !== item.id && el.id !== previous.id),
-          { ...item, isHidden: true },
-          { ...previous, isHidden: true },
-        ]);
-      }
+      setGrid((prev) => [
+        ...prev.filter((el) => el.id !== current.id && el.id !== previous.id),
+        { ...current, isHidden: true },
+        { ...previous, isHidden: true },
+      ]);
     }
   };
 
