@@ -9,6 +9,7 @@ export default function App() {
     previous: -1,
     current: -1,
   });
+  const [isWait, setIsWait] = useState(false);
 
   const createGame = () => {
     setClickCount(0);
@@ -55,6 +56,7 @@ export default function App() {
   }, [grid]);
 
   const handleClick = (item) => {
+    if (isWait) return;
     //check if box already open or is correct then return
     if (item.isCorrect || guess.previous === item.id) return;
     //increment count for click
@@ -73,8 +75,10 @@ export default function App() {
 
   useEffect(() => {
     if (guess.current < 0 || guess.previous < 0) return;
+    setIsWait(true);
     const timeout = setTimeout(() => {
       checkCorrect();
+      setIsWait(false);
     }, 500);
     return () => clearTimeout(timeout);
   }, [guess]);
