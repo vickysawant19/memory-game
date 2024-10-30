@@ -9,17 +9,21 @@ export default function App() {
     previous: -1,
     current: -1,
   });
+  const [isWait, setIsWait] = useState(false);
 
   const createGame = () => {
     setClickCount(0);
     setGuess({ current: -1, previous: -1 });
+<<<<<<< HEAD
     const values = new Array(8)
+=======
+    const values = new Array(20)
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
       .fill(1)
-      .map((item) => Math.floor(Math.random() * 100) + 1);
+      .map((_) => Math.floor(Math.random() * 100) + 1)
+      .slice(0, 8);
 
     const doubleValues = [...values, ...values];
-
-    console.log(doubleValues);
     const arr = new Array(16).fill(1).map((item, id) => {
       return {
         id: id,
@@ -43,24 +47,40 @@ export default function App() {
 
   const calculateWin = () => {
     const remaining = grid.filter((item) => !item.isCorrect);
+<<<<<<< HEAD
     console.log(remaining.length);
+=======
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     if (remaining.length === 0) {
       alert(`Game Completed! you have used ${clickCount} clicks`);
+      setGameStart(false);
       setClickCount(0);
     }
   };
 
   useEffect(() => {
+<<<<<<< HEAD
+=======
+    if (!gameStart) return;
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     calculateWin();
   }, [grid]);
 
   const handleClick = (item) => {
+<<<<<<< HEAD
     //check if box already open or is correct then return
     if (item.isCorrect || guess.previous === item.id) return;
 
     //increment count for click
     setClickCount((prev) => prev + 1);
 
+=======
+    if (isWait) return;
+    //check if box already open or is correct then return
+    if (item.isCorrect || guess.previous === item.id) return;
+    //increment count for click
+    setClickCount((prev) => prev + 1);
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     //open the box
     setGrid((prev) => [
       ...prev.filter((el) => el.id !== item.id),
@@ -70,23 +90,37 @@ export default function App() {
       setGuess((prev) => ({ ...prev, current: item.id }));
     } else {
       setGuess(() => ({ previous: guess.current, current: item.id }));
+<<<<<<< HEAD
       // checkCorrect(item);
+=======
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     }
   };
 
   useEffect(() => {
     if (guess.current < 0 || guess.previous < 0) return;
+<<<<<<< HEAD
     console.log(guess.current, "here", guess);
     const timeout = setTimeout(() => {
       checkCorrect();
     }, 1000);
+=======
+    setIsWait(true);
+    const timeout = setTimeout(() => {
+      checkCorrect();
+      setIsWait(false);
+    }, 500);
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     return () => clearTimeout(timeout);
   }, [guess]);
 
   const checkCorrect = () => {
     const previous = grid.find((itm) => itm.id === guess.previous);
     const current = grid.find((itm) => itm.id === guess.current);
+<<<<<<< HEAD
     console.log(previous, current);
+=======
+>>>>>>> 576f44b872f523287cb2a47196b3c4c39dfc0b7b
     if (!previous || !current) return;
     setGuess({ current: -1, previous: -1 });
     if (previous.value === current.value) {
